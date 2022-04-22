@@ -1,7 +1,9 @@
 #pragma once
-#ifndef Validate_H
-#define Validate_H
+#ifndef functions_H
+#define functions_H
 
+
+#include <string>
 
 bool validate(std::string math_exp);
 
