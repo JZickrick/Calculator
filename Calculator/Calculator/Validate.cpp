@@ -9,7 +9,7 @@ enum tokens {
 	EOF_TOKEN = 7, t_NT = 0, T_NT = 1, r_NT = 2, R_NT = 3, v_NT = 4
 };
 
-int validate(std::string math_exp) {
+bool validate(std::string math_exp) {
 
 	//look-up table
 	std::string ll_table[5][8] = {
@@ -32,7 +32,7 @@ int validate(std::string math_exp) {
 	math_exp_regex = regex_replace(math_exp_regex, negative_pattern, "$2d");
 	math_exp_regex = regex_replace(math_exp_regex, implicit_parentheses, "$2*$3");
 
-	std::cout << math_exp_regex << std::endl << std::endl;
+	//std::cout << math_exp_regex << std::endl << std::endl;
 
 	math_exp_regex.append("$");
 
@@ -47,58 +47,32 @@ int validate(std::string math_exp) {
 		stack_machine.pop();
 
 		switch (string_char) {
-		case '+':
-			next_token = PLUS_TOKEN;
-			break;
-		case '-':
-			next_token = MIN_TOKEN;
-			break;
-		case '*':
-			next_token = MULT_TOKEN;
-			break;
-		case '/':
-			next_token = DIV_TOKEN;
-			break;
-		case '(':
-			next_token = LP_TOKEN;
-			break;
-		case ')':
-			next_token = RP_TOKEN;
-			break;
-		case 'd':
-			next_token = DOUBLE_TOKEN;
-			break;
-		case '$':
-			next_token = EOF_TOKEN;
-			break;
+		case '+': next_token = PLUS_TOKEN; break;
+		case '-': next_token = MIN_TOKEN; break;
+		case '*': next_token = MULT_TOKEN; break;
+		case '/': next_token = DIV_TOKEN; break;
+		case '(': next_token = LP_TOKEN; break;
+		case ')': next_token = RP_TOKEN; break;
+		case 'd': next_token = DOUBLE_TOKEN; break;
+		case '$': next_token = EOF_TOKEN; break;
 		default:
 			std::cout << "Error in input string. Invalid character entered: " << string_char << std::endl;
 			std::cout << "Error occured at: " << math_exp_regex.substr(0, i) << " ^ " << math_exp_regex.substr(i, math_exp_regex.length() - 1) << std::endl;
-			return 2;
+			return false;
 		}
 
 		while (string_char != stack_char) {
 			std::string push_string = "";
 			switch (stack_char) {
-			case 't':
-				current_nonterminal = t_NT;
-				break;
-			case 'T':
-				current_nonterminal = T_NT;
-				break;
-			case 'r':
-				current_nonterminal = r_NT;
-				break;
-			case 'R':
-				current_nonterminal = R_NT;
-				break;
-			case 'v':
-				current_nonterminal = v_NT;
-				break;
+			case 't': current_nonterminal = t_NT; break;
+			case 'T': current_nonterminal = T_NT; break;
+			case 'r': current_nonterminal = r_NT; break;
+			case 'R': current_nonterminal = R_NT; break;
+			case 'v': current_nonterminal = v_NT; break;
 			default:
 				std::cout << "Invalid nonterminal: " << stack_char << std::endl;
 				std::cout << "Error occured at: " << math_exp_regex.substr(0, i) << " ^ " << math_exp_regex.substr(i, math_exp_regex.length() - 1) << std::endl;
-				return 3;
+				return false;
 			}
 
 			push_string = ll_table[current_nonterminal][next_token];
@@ -107,13 +81,13 @@ int validate(std::string math_exp) {
 			if (push_string.length() == 0) {
 				std::cout << "String is not expression!" << std::endl;
 				std::cout << "Error occured at: " << math_exp_regex.substr(0, i) << " ^ " << math_exp_regex.substr(i, math_exp_regex.length() - 1) << std::endl;
-				return 4;
+				return false;
 			}
 
 			if (push_string.empty()) {
 				std::cout << "String is not expression!" << std::endl;
 				std::cout << "Error occured at: " << math_exp_regex.substr(0, i) << " ^ " << math_exp_regex.substr(i, math_exp_regex.length() - 1) << std::endl;
-				return 5;
+				return false;
 			}
 
 			if (push_string.at(0) != 'e') {
@@ -128,12 +102,9 @@ int validate(std::string math_exp) {
 	}
 
 	if (stack_machine.empty()) {
-		std::cout << "Correct!" << std::endl;
+		return true;
 	}
 	else {
-		std::cout << "not correct" << std::endl;
+		return false;
 	}
-
-
-	return 0;
 }
