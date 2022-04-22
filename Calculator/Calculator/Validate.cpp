@@ -5,13 +5,13 @@
 
 //enumeration tokens to easily refer to non terminal characters
 enum tokens {
-	PLUS_TOKEN = 0, MIN_TOKEN = 1, MULT_TOKEN = 2, DIV_TOKEN = 3, LP_TOKEN = 4, RP_TOKEN = 5, DOUBLE_TOKEN = 6,
-	EOF_TOKEN = 7, t_NT = 0, T_NT = 1, r_NT = 2, R_NT = 3, v_NT = 4
+	PLUS_TOKEN = 0, MIN_TOKEN = 1, MULT_TOKEN = 2, DIV_TOKEN = 3, EXP_TOKEN = 4, LP_TOKEN = 5, RP_TOKEN = 6, DOUBLE_TOKEN = 7,
+	EOF_TOKEN = 8, t_NT = 0, T_NT = 1, r_NT = 2, R_NT = 3, w_NT = 4, W_NT = 5, v_NT = 6
 };
 
 bool validate(std::string math_exp) {
-
-	//look-up table
+	/*
+	//original look-up table
 	std::string ll_table[5][8] = {
 		//+       -       *       /       (       )       double  $
 		 {""     ,""     ,""     ,""     ,"rT"   ,""     ,"rT"   ,""},  // t->
@@ -20,11 +20,24 @@ bool validate(std::string math_exp) {
 		 {"e"    ,"e"    ,"*vR"  ,"/vR"  ,""     ,"e"    ,""     ,"e"}, // R->
 		 {""     ,""     ,""     ,""     ,"(t)"  ,""     ,"d"    ,""}   // v->
 	};
+	*/
+
+	//look-up table
+	std::string ll_table[7][9] = {
+		//+       -       *       /       ^       (       )       double  $
+		 {""     ,""     ,""     ,""     ,""      ,"rT"   ,""     ,"rT"   ,"" },  // t->
+		 {"+rT"  ,"-rT"  ,""     ,""     ,""      ,""     ,"e"    ,""     ,"e"},  // T->
+		 {""     ,""     ,""     ,""     ,""      ,"wR"   ,""     ,"wR"   ,"" },  // r->
+		 {"e"    ,"e"    ,"*wR"  ,"/wR"  ,""      ,""     ,"e"    ,""     ,"e"},  // R->
+		 {""     ,""     ,""     ,""     ,""      ,"vW"   ,""     ,"vW"   ,"" },  // w
+		 {"e"    ,"e"    ,"e"    ,"e"    ,"^vW"   ,""     ,"e"    ,""     ,"e"},  // W->
+		 {""     ,""     ,""     ,""     ,""      ,"(t)"  ,""     ,"d"    ,"" }   // v->
+	};
 
 	std::string math_exp_regex = "";
 	std::stack<char> stack_machine;
 	std::regex double_pattern("(\\d+\\.?\\d*|\\.\\d+)");	//Converts numbers to the character d
-	std::regex negative_pattern("(([+\\-*\\/]|^)\\-d)");	//Finds any negativ d's and drops the negative sign since processing is allowed on negative numbers
+	std::regex negative_pattern("(([+\\-*\\/\\^]|^)\\-d)");	//Finds any negativ d's and drops the negative sign since processing is allowed on negative numbers
 	std::regex implicit_parentheses("((d|\\))(\\())");		//Adds multiplication symbol between implicit multiplication
 
 	//regex_replace(string, regex, replace string);
@@ -51,6 +64,7 @@ bool validate(std::string math_exp) {
 		case '-': next_token = MIN_TOKEN; break;
 		case '*': next_token = MULT_TOKEN; break;
 		case '/': next_token = DIV_TOKEN; break;
+		case '^': next_token = EXP_TOKEN; break;
 		case '(': next_token = LP_TOKEN; break;
 		case ')': next_token = RP_TOKEN; break;
 		case 'd': next_token = DOUBLE_TOKEN; break;
@@ -68,6 +82,8 @@ bool validate(std::string math_exp) {
 			case 'T': current_nonterminal = T_NT; break;
 			case 'r': current_nonterminal = r_NT; break;
 			case 'R': current_nonterminal = R_NT; break;
+			case 'w': current_nonterminal = w_NT; break;
+			case 'W': current_nonterminal = W_NT; break;
 			case 'v': current_nonterminal = v_NT; break;
 			default:
 				std::cout << "Invalid nonterminal: " << stack_char << std::endl;
@@ -76,6 +92,7 @@ bool validate(std::string math_exp) {
 			}
 
 			push_string = ll_table[current_nonterminal][next_token];
+			//std::cout << current_nonterminal << " " << next_token << std::endl;
 
 
 			if (push_string.length() == 0) {
