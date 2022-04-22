@@ -1,11 +1,17 @@
 #include <iostream>
+#include <string>
+#include "Validate.h"
 
 using namespace std;
 
 int main() {
 
-	cout << "Hello World!" << endl;
-	cout << "Test of merging!" << endl;
-	cout << "Quick Test" << endl;
+	string userInput;
+
+	cout << "Enter an arithmetic expression: ";
+	getline(cin, userInput);
+
+	cout << "result is: " << validate(userInput);
+
 	return 0;
 }
