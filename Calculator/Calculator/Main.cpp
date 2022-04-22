@@ -4,33 +4,33 @@
 
 using namespace std;
 
+//Function Declaration
 void printMenu();
 
+
+//Main Program
 int main() {
 
-	string userInput = "";
+	//Variable Declarations
+	string userInput = "";			//String for user input
+	bool isValidInput = false;		//Holds a value for if the user input is valid
 
+	//print menu
 	printMenu();
 
 	while (userInput != "Q" || userInput != "q") {
 		do {
 			cout << "-> ";
 			getline(cin, userInput);
-			if (userInput == "m" || userInput == "M") {
-				printMenu();
-			}
-			if (userInput == "c" || userInput == "C") {
-				system("cls");
-			}
-			if (userInput == "q" || userInput == "Q") {
-				return 0;
-			}
+
+			if (userInput == "m" || userInput == "M") { printMenu(); }
+			if (userInput == "c" || userInput == "C") { system("cls"); }
+			if (userInput == "q" || userInput == "Q") { return 0; }
 		} while (userInput == "M" || userInput == "m" || userInput == "c" || userInput == "C");
 
-		bool isValid = false;
-		isValid = validate(userInput);
+		isValidInput = validate(userInput);
 
-		if (isValid) {
+		if (isValidInput) {
 			cout << "Valid" << endl;
 		}
 		else {
@@ -44,6 +44,7 @@ int main() {
 	return 0;
 }
 
+//Menu Print Function
 void printMenu() {
 	cout << "Welcome to the Awesome Calculator Application for MSCS-271!" << endl;
 	cout << "Valid arithmatic expressions include: + - * / ^ ( )" << endl;

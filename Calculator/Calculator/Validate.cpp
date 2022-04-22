@@ -10,18 +10,6 @@ enum tokens {
 };
 
 bool validate(std::string math_exp) {
-	/*
-	//original look-up table
-	std::string ll_table[5][8] = {
-		//+       -       *       /       (       )       double  $
-		 {""     ,""     ,""     ,""     ,"rT"   ,""     ,"rT"   ,""},  // t->
-		 {"+rT"  ,"-rT"  ,""     ,""     ,""     ,"e"    ,""     ,"e"}, // T->
-		 {""     ,""     ,""     ,""     ,"vR"   ,""     ,"vR"   ,""},  // r->
-		 {"e"    ,"e"    ,"*vR"  ,"/vR"  ,""     ,"e"    ,""     ,"e"}, // R->
-		 {""     ,""     ,""     ,""     ,"(t)"  ,""     ,"d"    ,""}   // v->
-	};
-	*/
-
 	//look-up table
 	std::string ll_table[7][9] = {
 		//+       -       *       /       ^       (       )       double  $
