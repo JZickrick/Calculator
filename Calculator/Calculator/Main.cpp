@@ -33,6 +33,9 @@ int main() {
 		if (isValid) {
 			cout << "Valid" << endl;
 		}
+		else {
+			cout << "Invalid" << endl;
+		}
 
 		cout << endl;
 	};
@@ -45,7 +48,10 @@ void printMenu() {
 	cout << "Welcome to the Awesome Calculator Application for MSCS-271!" << endl;
 	cout << "Valid arithmatic expressions include: + - * / ^ ( )" << endl;
 	cout << "You may also perform implicit multiplication as well as use a negative (-) sign for negative numbers" << endl;
-	cout << "This means 5--5 is a valid expression" << endl;
-	cout << "At any time you can type any of the following commands -> (m) - menu, (c) - clear, (q) - quit" << endl;
+	cout << "This means 5--5 is a valid expression as well as 5(5+5)" << endl;
+	cout << "At any time you can type any of the following commands:" << endl;
+	cout << "\t(m) - print menu" << endl;
+	cout << "\t(c) - clear screen" << endl;
+	cout << "\t(q) - quit" << endl;
 	cout << endl;
 }
