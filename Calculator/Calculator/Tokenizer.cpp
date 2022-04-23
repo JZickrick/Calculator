@@ -2,17 +2,17 @@
 #include <vector>
 #include <string>
 
-class Token{ //what forms a token
+class Token { //what forms a token
 
 public:
-	enum class Type{
+	enum class Type {
 		Unknown,	//0
 		Number,		//1
 		Operator,	//2
 		lPara,		//3
 		rPara,		//4
 	};
-	Token(Type t, std::string& s, int prec = -1, bool ra = false) 
+	Token(Type t, std::string& s, int prec = -1, bool ra = false)
 		: type{ t }, str{ s }, precedence{ prec }, rightAssociative{ ra }
 	{}
 	int getPrec() { return precedence; }
@@ -25,18 +25,19 @@ public:
 	int precedence; //dont know if we need this yet.
 	bool rightAssociative; // not sure why we need this one either
 
+	/*
 	std::ostream& operator<<(std::ostream& os, Token& token) { // allows us to use the << to write a tokem
 		os << token.getString();
 		return os;
 	}
-	 
+	*/
 
-}
+};
 
 // The most key tokenization happing is that all - symbols need to be checked if they are a minus or a negitive sign
 
 
-std::vector<Token> tokenizer(std::string& expression) {
+std::vector<Token> tokenizer (std::string& expression) {
 	std::vector<Token> tokens;
 
 	for (std::string::iterator it = expression.begin(); it != expression.end();++it) { // starts at the bgining of the expression
