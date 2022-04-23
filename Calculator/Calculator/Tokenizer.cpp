@@ -1,6 +1,8 @@
-#include "Tokenizer.h"
+//#include "Tokenizer.h"
+
 #include <vector>
 #include <string>
+#include <iostream>
 
 class Token { //what forms a token
 
