@@ -3,90 +3,60 @@
 #include <queue>
 #include <vector>
 #include <assert.h>
+#include "Tokenizer.h"
 
 using namespace std;
 
-enum myType {
-	UNKNOWN = 0, NUMBER = 1, OPERATOR = 2, lPara = 3, rPara = 4
-};
-
-class token {
-public:
-	int getType() {
-		return 1;
-		//for reference of what getType will return
-		//Unknown,		//0
-		//Number,		//1
-		//Operator,		//2
-		//lPara,		//3
-		//rPara,		//4
-	}
-	string getString() {
-		return "Test String";
-	}
-	int getPrecedence() {
-		return 1;
-	}
-	bool getRightAssociative() {
-		return true;
-	}
-
-private:
-
-};
-
-double evaluate(vector<token> tokenExp) {
+double evaluate(vector<Token> tokenExp) {
 
 	//vector array of tokens
 	//token.getType()
 	//token.getStr()
 
-	stack<token> tokensInOrder;
+	stack<Token> tokensInOrder;
 
-	stack<token> operatorStack;
-	queue<token> outputQueue;
+	stack<Token> operatorStack;
+	queue<Token> outputQueue;
 
 	while (!tokenExp.empty()) {
-		token temp;
-		temp = tokenExp.back();
+		tokensInOrder.push(tokenExp.back());
 		tokenExp.pop_back();
-		tokensInOrder.push(temp);
 	}
 
 	while (!tokensInOrder.empty()) {
-		token currentToken = tokensInOrder.top();
+		Token currentToken = tokensInOrder.top();
 		tokensInOrder.pop();
-		if (currentToken.getType() == NUMBER) {
+		if (currentToken.getType() == Token::Type::Number) {
 			outputQueue.push(currentToken);
 		}
-		if (currentToken.getType() == OPERATOR) {
+		if (currentToken.getType() == Token::Type::Operator) {
 			//there is an operator o2 other than the left parenthesis at the top
 			//of the operator stack, and (o2 has greater precedence than o1
 			//or they have the same precedence and o1 is left - associative)
-			while (operatorStack.top().getType() != lPara && ( operatorStack.top().getPrecedence() > currentToken.getPrecedence() || ( operatorStack.top().getPrecedence() == currentToken.getPrecedence() && !currentToken.getRightAssociative()) ) ) {
+			while (operatorStack.top().getType() != Token::Type::lPara && ( operatorStack.top().getPrec() > currentToken.getPrec() || ( operatorStack.top().getPrec() == currentToken.getPrec() && !currentToken.getRightAssociative()) ) ) {
 				outputQueue.push(operatorStack.top());
 				operatorStack.pop();
 			}
 			operatorStack.push(currentToken);
 		}
-		if (currentToken.getType() == lPara) {
+		if (currentToken.getType() == Token::Type::lPara) {
 			operatorStack.push(currentToken);
 		}
-		if (currentToken.getType() == rPara) {
-			while (operatorStack.top().getType() != lPara) {
+		if (currentToken.getType() == Token::Type::rPara) {
+			while (operatorStack.top().getType() != Token::Type::lPara) {
 				assert(!operatorStack.empty());
 				outputQueue.push(operatorStack.top());
 				operatorStack.pop();
 			}
-			assert(operatorStack.top().getType() == lPara);
+			assert(operatorStack.top().getType() == Token::Type::lPara);
 			operatorStack.pop();
 		}
 	}
 	while (!operatorStack.empty()) {
-		assert(operatorStack.top().getType() != lPara);
+		assert(operatorStack.top().getType() != Token::Type::lPara);
 		outputQueue.push(operatorStack.top());
 		operatorStack.pop();
 	}
 
-
+	return 10;
 }
