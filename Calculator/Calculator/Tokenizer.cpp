@@ -6,13 +6,13 @@ class Token{ //what forms a token
 
 public:
 	enum class Type{
-		Unknown,
-		Number,
-		Operator,
-		lPara,
-		rPara,
+		Unknown,	//0
+		Number,		//1
+		Operator,	//2
+		lPara,		//3
+		rPara,		//4
 	};
-	Token(type t, std::string& s, int prec = -1, bool ra = false) 
+	Token (type t, std::string& s, int prec = -1, bool ra = false) 
 		: type{ t }, str{ s }, precedence{ prec }, rightAssociative{ ra }
 	{}
 	Type type;//This represents how it should be read in evaluation

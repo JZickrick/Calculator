@@ -5,7 +5,8 @@
 
 #include <string>
 
-bool validate(std::string math_exp);
+bool validate(string math_exp);
+double evaluate(string expression);
 
 
 #endif
