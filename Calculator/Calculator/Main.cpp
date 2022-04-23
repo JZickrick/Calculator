@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include "functions.h"
+#include "Tokenizer.h"
 
 using namespace std;
 
@@ -10,6 +12,12 @@ void printMenu();
 
 //Main Program
 int main() {
+
+	//Testing Tokenizer
+	string testIn = "5+3";
+	
+	vector<Token> round1 = tokenizer(testIn);
+
 
 	//Variable Declarations
 	string userInput = "";			//String for user input
