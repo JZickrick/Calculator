@@ -1,7 +1,4 @@
-#include <iostream>
-#include <string>
-#include <stack>
-#include <regex>
+#include "Validate.h"
 
 //enumeration tokens to easily refer to non terminal characters
 enum tokens {
@@ -112,4 +109,4 @@ bool validate(std::string math_exp) {
 	else {
 		return false;
 	}
-}
+};

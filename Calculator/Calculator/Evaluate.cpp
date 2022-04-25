@@ -1,7 +1,4 @@
-#include <stack>
-#include <queue>
-#include <assert.h>
-#include "Tokenizer.h"
+#include "Evaluate.h"
 
 using namespace std;
 

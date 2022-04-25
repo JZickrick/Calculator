@@ -27,12 +27,24 @@
     <ClCompile Include="Tokenizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tokenizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Validate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Evaluate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Token.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

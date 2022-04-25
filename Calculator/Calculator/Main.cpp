@@ -1,5 +1,6 @@
-#include "functions.h"
-
+#include "Tokenizer.h"
+#include "Validate.h"
+#include "Evaluate.h"
 
 //Function Declaration
 void printMenu();
