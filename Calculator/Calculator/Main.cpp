@@ -10,10 +10,9 @@ void printMenu();
 int main() {
 
 	//Testing Tokenizer
-	std::string testIn = "5+3";
+	std::string testIn = "W#@$$000/45+3.444--5.0*.4303";
 	
 	std::vector<Token> round1 = tokenizer(testIn);
-
 
 	////Variable Declarations
 	//string userInput = "";			//String for user input

@@ -15,6 +15,7 @@ public:
 		Operator,	//2
 		lPara,		//3
 		rPara,		//4
+		EndOfString,
 	};
 	Token(Type t, std::string& s, int prec = -1, bool ra = false)
 		: type{ t }, str{ s }, precedence{ prec }, rightAssociative{ ra }
