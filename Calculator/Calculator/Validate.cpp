@@ -6,7 +6,7 @@ enum tokens {
 	EOF_TOKEN = 8, t_NT = 0, T_NT = 1, r_NT = 2, R_NT = 3, w_NT = 4, W_NT = 5, v_NT = 6
 };
 
-bool validate(std::string math_exp) {
+bool validate(std::vector<Token>& math_exp) {
 	//look-up table
 	std::string ll_table[7][9] = {
 		//+       -       *       /       ^       (       )       double  $
@@ -19,28 +19,105 @@ bool validate(std::string math_exp) {
 		 {""     ,""     ,""     ,""     ,""      ,"(t)"  ,""     ,"d"    ,"" }   // v->
 	};
 
-	std::string math_exp_regex = "";
+	//Adds double negative signs to the actual number (rather than having two negative signs)
+	//Add implicit multiplication
+	for (int i = 0; i < math_exp.size(); ++i) {
+		Token::Type tempType = math_exp.at(i).getType();
+		std::string tempTypeAsString = "";
+		
+		std::string tokenString = math_exp.at(i).getString();
+
+		//negative numbers
+		if (tempType == Token::Type::Operator && tokenString == "-") {
+			Token::Type nextType = math_exp.at(i+1).getType();
+			std::string nextString = math_exp.at(i+1).getString();
+			//std::cout << "HERE" << std::endl;
+
+			if (nextType == Token::Type::Operator && nextString == "-") {
+				Token::Type nextNextType = math_exp.at(i + 2).getType();
+				std::string nextNextString = math_exp.at(i + 2).getString();
+				//std::cout << "HERE2" << std::endl;
+
+				if (nextNextType == Token::Type::Number){
+					std::string newString = "-" + nextNextString;
+					Token newToken = { Token::Type::Number, newString };
+					math_exp.at(i + 2) = newToken;
+					math_exp.erase(math_exp.begin() + i + 1);
+					//std::cout << "HERE 3" << std::endl;
+				}
+			}
+		}
+
+		//implicit multiplication
+		if (tempType == Token::Type::rPara || tempType == Token::Type::Number) {
+			Token::Type nextType = math_exp.at(i + 1).getType();
+			//std::cout << "multiplication 1" << std::endl;
+
+			if (nextType == Token::Type::lPara) {
+				//vecOfNums.insert(itPos, 9);
+				std::string multiplicationString = "*";
+				Token multiplicationToken = { Token::Type::Operator, multiplicationString };
+				math_exp.insert(math_exp.begin() + i + 1, multiplicationToken);
+				i++;
+				//std::cout << "multiplication 2" << std::endl;
+			}
+		}
+	}
+
+	//converts vector of tokens to string
+	std::string math_exp_string = "";
+	for (int i = 0; i < math_exp.size(); ++i) {
+		Token::Type tempType = math_exp.at(i).getType();
+		std::string tempTypeAsString = "";
+
+		std::string tokenString = math_exp.at(i).getString();
+
+		switch (tempType) {
+		case Token::Type::Number:
+			math_exp_string = math_exp_string + "d";
+			break;
+		case Token::Type::Operator:
+			if (tokenString == "+") { math_exp_string = math_exp_string + "+"; }
+			else if (tokenString == "-") { math_exp_string = math_exp_string + "-"; }
+			else if (tokenString == "*") { math_exp_string = math_exp_string + "*"; }
+			else if (tokenString == "/") { math_exp_string = math_exp_string + "/"; }
+			else if (tokenString == "^") { math_exp_string = math_exp_string + "^"; }
+			else {
+				//adds invalid symbol
+				math_exp_string = math_exp_string + tokenString;
+			}
+			break;
+		case Token::Type::lPara:
+			math_exp_string = math_exp_string + "(";
+			break;
+		case Token::Type::rPara:
+			math_exp_string = math_exp_string + ")";
+			break;
+		case Token::Type::EndOfString:
+			math_exp_string = math_exp_string + "$";
+			break;
+		case Token::Type::Unknown:
+			math_exp_string = math_exp_string + tokenString;
+			break;
+		default: 
+			math_exp_string = math_exp_string + tokenString;
+			break;
+		}
+		//std::cout << math_exp_string << std::endl;
+	}
+
+
+	//Start processing string to validate
+
 	std::stack<char> stack_machine;
-	std::regex double_pattern("(\\d+\\.?\\d*|\\.\\d+)");	//Converts numbers to the character d
-	std::regex negative_pattern("(([+\\-*\\/\\^]|^)\\-d)");	//Finds any negativ d's and drops the negative sign since processing is allowed on negative numbers
-	std::regex implicit_parentheses("((d|\\))(\\())");		//Adds multiplication symbol between implicit multiplication
-
-	//regex_replace(string, regex, replace string);
-	math_exp_regex = regex_replace(math_exp, double_pattern, "d");
-	math_exp_regex = regex_replace(math_exp_regex, negative_pattern, "$2d");
-	math_exp_regex = regex_replace(math_exp_regex, implicit_parentheses, "$2*$3");
-
-	//std::cout << math_exp_regex << std::endl << std::endl;
-
-	math_exp_regex.append("$");
 
 	stack_machine.push('$');
 	stack_machine.push('t');
 
-	for (int i = 0; i < math_exp_regex.length(); i++) {
+	for (int i = 0; i < math_exp.size(); i++) {
 		int next_token;
 		int current_nonterminal;
-		char string_char = math_exp_regex.at(i);
+		char string_char = math_exp_string.at(i);
 		char stack_char = stack_machine.top();
 		stack_machine.pop();
 
@@ -49,14 +126,13 @@ bool validate(std::string math_exp) {
 		case '-': next_token = MIN_TOKEN; break;
 		case '*': next_token = MULT_TOKEN; break;
 		case '/': next_token = DIV_TOKEN; break;
-		case '^': next_token = EXP_TOKEN; break;
 		case '(': next_token = LP_TOKEN; break;
 		case ')': next_token = RP_TOKEN; break;
 		case 'd': next_token = DOUBLE_TOKEN; break;
 		case '$': next_token = EOF_TOKEN; break;
 		default:
 			std::cout << "Error in input string. Invalid character entered: " << string_char << std::endl;
-			std::cout << "Error occured at: " << math_exp_regex.substr(0, i) << " ^ " << math_exp_regex.substr(i, math_exp_regex.length() - 1) << std::endl;
+			std::cout << "Error occured at: " << math_exp_string.substr(0, i) << " ^ " << math_exp_string.substr(i, math_exp_string.length() - 1) << std::endl;
 			return false;
 		}
 
@@ -72,7 +148,7 @@ bool validate(std::string math_exp) {
 			case 'v': current_nonterminal = v_NT; break;
 			default:
 				std::cout << "Invalid nonterminal: " << stack_char << std::endl;
-				std::cout << "Error occured at: " << math_exp_regex.substr(0, i) << " ^ " << math_exp_regex.substr(i, math_exp_regex.length() - 1) << std::endl;
+				std::cout << "Error occured at: " << math_exp_string.substr(0, i) << " ^ " << math_exp_string.substr(i, math_exp_string.length() - 1) << std::endl;
 				return false;
 			}
 
@@ -82,13 +158,13 @@ bool validate(std::string math_exp) {
 
 			if (push_string.length() == 0) {
 				std::cout << "String is not expression!" << std::endl;
-				std::cout << "Error occured at: " << math_exp_regex.substr(0, i) << " ^ " << math_exp_regex.substr(i, math_exp_regex.length() - 1) << std::endl;
+				std::cout << "Error occured at: " << math_exp_string.substr(0, i) << " ^ " << math_exp_string.substr(i, math_exp_string.length() - 1) << std::endl;
 				return false;
 			}
 
 			if (push_string.empty()) {
 				std::cout << "String is not expression!" << std::endl;
-				std::cout << "Error occured at: " << math_exp_regex.substr(0, i) << " ^ " << math_exp_regex.substr(i, math_exp_regex.length() - 1) << std::endl;
+				std::cout << "Error occured at: " << math_exp_string.substr(0, i) << " ^ " << math_exp_string.substr(i, math_exp_string.length() - 1) << std::endl;
 				return false;
 			}
 

@@ -6,8 +6,10 @@
 #include <string>
 #include <stack>
 #include <regex>
+#include <iterator>
+#include "Token.h"
 
 enum tokens;
-bool validate(std::string math_exp);
+bool validate(std::vector<Token>& math_exp);
 
 #endif
