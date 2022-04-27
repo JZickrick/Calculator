@@ -50,35 +50,41 @@ int main() {
 	//MAIN PROGRAM
 	//
 
-	////Variable Declarations
-	//string userInput = "";			//String for user input
-	//bool isValidInput = false;		//Holds a value for if the user input is valid
+	/*
+	//Variable Declarations
+	std::string userInput = "";			//String for user input
+	bool isValidInput = false;		//Holds a value for if the user input is valid
 
-	////print menu
-	//printMenu();
+	//print menu
+	printMenu();
 
-	//while (userInput != "Q" || userInput != "q") {
-	//	do {
-	//		cout << "-> ";
-	//		getline(cin, userInput);
+	while (userInput != "Q" || userInput != "q") {
+		do {
+			std::cout << "-> ";
+			getline(std::cin, userInput);
 
-	//		if (userInput == "m" || userInput == "M") { printMenu(); }
-	//		if (userInput == "c" || userInput == "C") { system("cls"); }
-	//		if (userInput == "q" || userInput == "Q") { return 0; }
-	//	} while (userInput == "M" || userInput == "m" || userInput == "c" || userInput == "C");
+			if (userInput == "m" || userInput == "M") { printMenu(); }
+			if (userInput == "c" || userInput == "C") { system("cls"); }
+			if (userInput == "q" || userInput == "Q") { return 0; }
+		} while (userInput == "M" || userInput == "m" || userInput == "c" || userInput == "C");
 
-	//	isValidInput = validate(userInput);
+		std::vector<Token> userInputTokens = tokenizer(userInput);
 
-	//	if (isValidInput) {
-	//		cout << "Valid" << endl;
-	//	}
-	//	else {
-	//		cout << "Invalid" << endl;
-	//	}
+		isValidInput = validate(userInputTokens);
 
-	//	cout << endl;
-	//};
-	
+		if (isValidInput) {
+			std::cout << "Valid" << std::endl;
+			int answer = 0;
+			//answer = evaluate(userInputTokens);
+			std::cout << answer << std::endl;
+		}
+		else {
+			std::cout << "Invalid" << std::endl;
+		}
+
+		std::cout << std::endl;
+	};
+	*/
 
 	return 0;
 }
