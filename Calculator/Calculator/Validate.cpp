@@ -21,6 +21,13 @@ bool validate(std::vector<Token>& math_exp) {
 
 	//Adds double negative signs to the actual number (rather than having two negative signs)
 	//Add implicit multiplication
+	if (math_exp.at(0).getType() == Token::Type::Operator && math_exp.at(0).getString() == "-" && math_exp.at(1).getType() == Token::Type::Number) {
+		std::string nextString = math_exp.at(1).getString();
+		std::string newString = "-" + nextString;
+		Token newToken = { Token::Type::Number, newString };
+		math_exp.at(1) = newToken;
+		math_exp.erase(math_exp.begin());
+	}
 	for (int i = 0; i < math_exp.size(); ++i) {
 		Token::Type tempType = math_exp.at(i).getType();
 		std::string tempTypeAsString = "";
@@ -28,10 +35,10 @@ bool validate(std::vector<Token>& math_exp) {
 		std::string tokenString = math_exp.at(i).getString();
 
 		//negative numbers
-		if (tempType == Token::Type::Operator && tokenString == "-") {
+		if (tempType == Token::Type::Operator) {
 			Token::Type nextType = math_exp.at(i+1).getType();
 			std::string nextString = math_exp.at(i+1).getString();
-			//std::cout << "HERE" << std::endl;
+			//std::cout << "HERE - i=" << i  << std::endl;
 
 			if (nextType == Token::Type::Operator && nextString == "-") {
 				Token::Type nextNextType = math_exp.at(i + 2).getType();
@@ -106,6 +113,7 @@ bool validate(std::vector<Token>& math_exp) {
 		//std::cout << math_exp_string << std::endl;
 	}
 
+	//std::cout << math_exp_string << std::endl;
 
 	//Start processing string to validate
 
@@ -126,6 +134,7 @@ bool validate(std::vector<Token>& math_exp) {
 		case '-': next_token = MIN_TOKEN; break;
 		case '*': next_token = MULT_TOKEN; break;
 		case '/': next_token = DIV_TOKEN; break;
+		case '^': next_token = EXP_TOKEN; break;
 		case '(': next_token = LP_TOKEN; break;
 		case ')': next_token = RP_TOKEN; break;
 		case 'd': next_token = DOUBLE_TOKEN; break;

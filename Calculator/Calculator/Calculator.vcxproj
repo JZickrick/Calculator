@@ -140,14 +140,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Evaluate.cpp" />
-    <ClCompile Include="functions.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Testing.cpp" />
     <ClCompile Include="Tokenizer.cpp" />
     <ClCompile Include="Validate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Evaluate.h" />
-    <ClInclude Include="functions.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="Tokenizer.h" />
     <ClInclude Include="Validate.h" />
