@@ -59,25 +59,6 @@ double evaluate(vector<Token> tokenExp) {
 		operatorStack.pop();
 	}
 
-	/*
-	int temp = outputQueue.size();
-	for (int i = 0; i < temp; ++i) {
-		std::string typeString;
-		switch (outputQueue.front().getType()) {
-		case Token::Type::EndOfString: typeString = "End Of String"; break;
-		case Token::Type::Number: typeString = "Number"; break;
-		case Token::Type::Operator: typeString = "Operator"; break;
-		case Token::Type::lPara: typeString = "Left Parentheses"; break;
-		case Token::Type::rPara: typeString = "Right Parentheses"; break;
-		case Token::Type::Unknown: typeString = "Unknown"; break;
-		default: typeString = "!!!The Default Case Was Assigned Here!!!"; break;
-		}
-
-		std::cout << typeString << " <-> " << outputQueue.front().getString() << std::endl;
-		outputQueue.pop();
-	}
-	*/
-
 
 	double answer = 0;
 	stack<Token> tempStack;
@@ -121,6 +102,11 @@ double evaluate(vector<Token> tokenExp) {
 				tempStack.pop();
 				double one = stod(tempStack.top().getString());
 				tempStack.pop();
+
+				if (two == 0) {
+					std::cout << "Error: Divide by 0" << std::endl;
+					return INFINITY;
+				}
 
 				answer = one / two;
 			}
