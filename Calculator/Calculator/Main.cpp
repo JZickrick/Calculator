@@ -1,6 +1,7 @@
 #include "Tokenizer.h"
 #include "Validate.h"
 #include "Evaluate.h"
+#include<algorithm>
 
 //Function Declaration
 void printMenu();
@@ -24,6 +25,10 @@ int main() {
 		do {
 			std::cout << "-> ";
 			getline(std::cin, userInput);
+
+			//removes white space from user input
+			std::regex space_pattern("(\\s)");
+			userInput = regex_replace(userInput, space_pattern, "");
 
 			if (userInput == "m" || userInput == "M") { printMenu(); }
 			if (userInput == "c" || userInput == "C") { system("cls"); }
