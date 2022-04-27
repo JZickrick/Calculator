@@ -44,6 +44,7 @@ bool validate(std::vector<Token>& math_exp) {
 		math_exp.insert(math_exp.begin(), zeroToken);
 		math_exp.insert(math_exp.begin(), leftParaToken);
 
+		//loops through to find the right place for the )
 		int counter = 1;
 		int numPara = 0;
 		while (!(math_exp.at(counter).getType() == Token::Type::rPara && numPara == 1)) {
@@ -102,6 +103,7 @@ bool validate(std::vector<Token>& math_exp) {
 					math_exp.insert(math_exp.begin() + i + 1, zeroToken);
 					i++;
 					
+					//loops through to find the right place for the )
 					int counter = i;
 					int numPara = 0;
 					while (!(math_exp.at(counter).getType() == Token::Type::rPara && numPara == 1)) {
