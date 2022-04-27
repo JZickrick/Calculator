@@ -66,7 +66,11 @@ std::vector<Token> tokenizer(std::string& expression) {
 				t = Token::Type::Operator; ra = true; prec = 4;
 				break;
 			case '$':
-				t = Token::Type::EndOfString;
+				if (it == (--expression.end())) {
+					t = Token::Type::EndOfString;
+				}
+				else
+					t = Token::Type::Unknown;
 				break;
 			}
 			std::string str = std::string(1, (*it));
