@@ -114,13 +114,6 @@ bool validate(std::vector<Token>& math_exp) {
 						counter++;
 					}
 
-					/*
-					int counter = i;
-					while (math_exp.at(counter).getType() != Token::Type::rPara) {
-						counter++;
-					}
-					*/
-
 					math_exp.insert(math_exp.begin() + counter + 1, rightParaToken);
 					i++;
 				}
@@ -186,11 +179,11 @@ bool validate(std::vector<Token>& math_exp) {
 			break;
 		case Token::Type::Unknown:
 			//adds invalid symbol; will get caught by parser later
-			math_exp_string = math_exp_string + tokenString;
+			math_exp_string = math_exp_string + "u";
 			break;
 		default: 
 			//adds invalid symbol; will get caught by parser later
-			math_exp_string = math_exp_string + tokenString;
+			math_exp_string = math_exp_string + "u";
 			break;
 		}
 	}
