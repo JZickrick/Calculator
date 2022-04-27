@@ -1,6 +1,7 @@
 #include "Tokenizer.h"
 #include "Validate.h"
 #include "Evaluate.h"
+//#include <iostream>
 
 //Function Declaration
 void printMenu();
@@ -10,9 +11,26 @@ void printMenu();
 int main() {
 
 	//Testing Tokenizer
-	std::string testIn = "W#@$$000/45+3.444--5.0*.4303";
+	std::string testIn = "W#@$$000/45+3.444--5.0*(.4303)";
 	
 	std::vector<Token> round1 = tokenizer(testIn);
+
+	for (int i = 0; i < round1.size(); ++i) {
+		Token::Type dummyType = round1.at(i).getType();
+		std::string typeString = "";
+
+		switch (dummyType) {
+		case Token::Type::EndOfString: typeString = "End Of String"; break;
+		case Token::Type::Number: typeString = "Number"; break;
+		case Token::Type::Operator: typeString = "Operator"; break;
+		case Token::Type::lPara: typeString = "Left Parentheses"; break;
+		case Token::Type::rPara: typeString = "Right Parentheses"; break;
+		case Token::Type::Unknown: typeString = "Unknown"; break;
+		default: typeString = "!!!The Default Case Was Assigned Here!!!"; break;
+		}
+
+		std::cout << typeString << " <-> " << round1.at(i).getString() << std::endl;
+	}
 
 	////Variable Declarations
 	//string userInput = "";			//String for user input
