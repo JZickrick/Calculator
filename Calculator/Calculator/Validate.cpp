@@ -31,6 +31,26 @@ bool validate(std::vector<Token>& math_exp) {
 		math_exp.at(1) = newToken;
 		math_exp.erase(math_exp.begin());
 	}
+	if (math_exp.at(0).getType() == Token::Type::Operator && math_exp.at(0).getString() == "-" && math_exp.at(1).getType() == Token::Type::lPara) {
+		std::string zeroString = "0";
+		Token::Type zeroType = Token::Type::Number;
+		Token zeroToken = { zeroType, zeroString };
+		std::string leftParaString = "(";
+		Token::Type leftParaType = Token::Type::lPara;
+		Token leftParaToken = { leftParaType, leftParaString };
+		std::string rightParaString = ")";
+		Token::Type rightParaType = Token::Type::rPara;
+		Token rightParaToken = { rightParaType, rightParaString };
+		math_exp.insert(math_exp.begin(), zeroToken);
+		math_exp.insert(math_exp.begin(), leftParaToken);
+
+		int counter = 0;
+		while (math_exp.at(counter).getType() != Token::Type::rPara) {
+			counter++;
+		}
+
+		math_exp.insert(math_exp.begin() + counter + 1, rightParaToken);
+	}
 	//loops through the expression to find negative numbers and implicit multiplication
 	for (int i = 0; i < math_exp.size(); ++i) {
 		//gets type and string of current token
@@ -41,7 +61,7 @@ bool validate(std::vector<Token>& math_exp) {
 
 		//negative numbers
 		//if any sort of operator is found, then a negative sign following it followed by a number means a negative number
-		if (tempType == Token::Type::Operator) {
+		if (tempType == Token::Type::Operator || tempType == Token::Type::lPara) {
 			Token::Type nextType = math_exp.at(i+1).getType();
 			std::string nextString = math_exp.at(i+1).getString();
 
@@ -57,6 +77,31 @@ bool validate(std::vector<Token>& math_exp) {
 					Token newToken = { Token::Type::Number, newString };
 					math_exp.at(i + 2) = newToken;
 					math_exp.erase(math_exp.begin() + i + 1);
+				}
+
+				//handles if we are making what's in ( ) negative
+				if (nextNextType == Token::Type::lPara) {
+					std::string zeroString = "0";
+					Token::Type zeroType = Token::Type::Number;
+					Token zeroToken = { zeroType, zeroString };
+					std::string leftParaString = "(";
+					Token::Type leftParaType = Token::Type::lPara;
+					Token leftParaToken = { leftParaType, leftParaString };
+					std::string rightParaString = ")";
+					Token::Type rightParaType = Token::Type::rPara;
+					Token rightParaToken = { rightParaType, rightParaString };
+					math_exp.insert(math_exp.begin() + i + 1, leftParaToken);
+					i++;
+					math_exp.insert(math_exp.begin() + i + 1, zeroToken);
+					i++;
+					
+					int counter = i;
+					while (math_exp.at(counter).getType() != Token::Type::rPara) {
+						counter++;
+					}
+
+					math_exp.insert(math_exp.begin() + counter + 1, rightParaToken);
+					i++;
 				}
 			}
 		}
@@ -129,7 +174,8 @@ bool validate(std::vector<Token>& math_exp) {
 		}
 	}
 
-
+	//Line for testing output
+	//std::cout << math_exp_string << std::endl;
 
 	//Start processing the string we just built to validate if it is a math expression
 	//Utalize LL(1) lookup table
