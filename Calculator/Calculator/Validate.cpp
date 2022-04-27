@@ -44,8 +44,15 @@ bool validate(std::vector<Token>& math_exp) {
 		math_exp.insert(math_exp.begin(), zeroToken);
 		math_exp.insert(math_exp.begin(), leftParaToken);
 
-		int counter = 0;
-		while (math_exp.at(counter).getType() != Token::Type::rPara) {
+		int counter = 1;
+		int numPara = 0;
+		while (!(math_exp.at(counter).getType() == Token::Type::rPara && numPara == 1)) {
+			if (math_exp.at(counter).getType() == Token::Type::lPara) {
+				numPara++;
+			}
+			if (math_exp.at(counter).getType() == Token::Type::rPara) {
+				numPara--;
+			}
 			counter++;
 		}
 
@@ -96,9 +103,23 @@ bool validate(std::vector<Token>& math_exp) {
 					i++;
 					
 					int counter = i;
+					int numPara = 0;
+					while (!(math_exp.at(counter).getType() == Token::Type::rPara && numPara == 1)) {
+						if (math_exp.at(counter).getType() == Token::Type::lPara) {
+							numPara++;
+						}
+						if (math_exp.at(counter).getType() == Token::Type::rPara) {
+							numPara--;
+						}
+						counter++;
+					}
+
+					/*
+					int counter = i;
 					while (math_exp.at(counter).getType() != Token::Type::rPara) {
 						counter++;
 					}
+					*/
 
 					math_exp.insert(math_exp.begin() + counter + 1, rightParaToken);
 					i++;
