@@ -9,22 +9,17 @@ double evaluate(vector<Token> tokenExp) {
 	stack<Token> operatorStack;
 	queue<Token> outputQueue;
 
-	tokenExp.pop_back();
+	tokenExp.pop_back();	//removes the end of expression character
 
 	for (int i = tokenExp.size()-1; i >= 0; --i) {
 		tokensInOrder.push(tokenExp.at(i));
-		//int test = tokenExp.at(i).getPrec();
-		//bool test1 = tokenExp.at(i).getRightAssociative();
-		//Token::Type test2 = tokenExp.at(i).getType();
-		//std::cout << tokenExp.at(i).getString() << std::endl;
 	}
 
-	//std::cout << "The Stack has " << tokensInOrder.size() << " tokens in it" << std::endl;
 
 	while (!tokensInOrder.empty()) {
 		Token currentToken = tokensInOrder.top();
 		tokensInOrder.pop();
-		//std::cout << currentToken.getString() << std::endl;
+
 		if (currentToken.getType() == Token::Type::Number) {
 			outputQueue.push(currentToken);
 		}
@@ -119,9 +114,8 @@ double evaluate(vector<Token> tokenExp) {
 				answer = pow(one, two);
 			}
 			else {
-				//adds invalid symbol
-				//math_exp_string = math_exp_string + tokenString;
-				std::cout << "The Answer Is Not Correct" << std::endl;
+				std::cout << "Something Really Bad Went Wrong When Evaluating the Expression" << std::endl;
+				std::cout << "Somehow an invalid operator got passed validate and into evaluate" << std::endl;
 				return -1;
 			}
 
@@ -130,7 +124,8 @@ double evaluate(vector<Token> tokenExp) {
 			tempStack.push(newToken);
 		}
 		else {
-			std::cout << "The Answer Is Not Correct" << std::endl;
+			std::cout << "Something Really Bad Went Wrong When Evaluating the Expression" << std::endl;
+			std::cout << "Something other than a Number or Operator ended up on the Output Queue in evaluate" << std::endl;
 			return -1;
 		}
 	}
@@ -139,7 +134,4 @@ double evaluate(vector<Token> tokenExp) {
 	answer = stod(answerToken.getString());
 
 	return answer;
-
-
-	//return 0;
 }

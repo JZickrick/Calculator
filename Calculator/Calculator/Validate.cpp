@@ -19,8 +19,11 @@ bool validate(std::vector<Token>& math_exp) {
 		 {""     ,""     ,""     ,""     ,""      ,"(t)"  ,""     ,"d"    ,"" }   // v->
 	};
 
+
 	//Adds double negative signs to the actual number (rather than having two negative signs)
 	//Add implicit multiplication
+
+	//Adds negative sign to number if negative number is at beginning of expression
 	if (math_exp.at(0).getType() == Token::Type::Operator && math_exp.at(0).getString() == "-" && math_exp.at(1).getType() == Token::Type::Number) {
 		std::string nextString = math_exp.at(1).getString();
 		std::string newString = "-" + nextString;
@@ -28,50 +31,62 @@ bool validate(std::vector<Token>& math_exp) {
 		math_exp.at(1) = newToken;
 		math_exp.erase(math_exp.begin());
 	}
+	//loops through the expression to find negative numbers and implicit multiplication
 	for (int i = 0; i < math_exp.size(); ++i) {
+		//gets type and string of current token
 		Token::Type tempType = math_exp.at(i).getType();
 		std::string tempTypeAsString = "";
 		
 		std::string tokenString = math_exp.at(i).getString();
 
 		//negative numbers
+		//if any sort of operator is found, then a negative sign following it followed by a number means a negative number
 		if (tempType == Token::Type::Operator) {
 			Token::Type nextType = math_exp.at(i+1).getType();
 			std::string nextString = math_exp.at(i+1).getString();
-			//std::cout << "HERE - i=" << i  << std::endl;
 
+			//if negative sign follows an operator it is most likely for a negative number
 			if (nextType == Token::Type::Operator && nextString == "-") {
 				Token::Type nextNextType = math_exp.at(i + 2).getType();
 				std::string nextNextString = math_exp.at(i + 2).getString();
-				//std::cout << "HERE2" << std::endl;
 
+				//ensures a number actually follows the negative sign
+				//if so, assign a negative sign to the number and delete the extra minus operator token
 				if (nextNextType == Token::Type::Number){
 					std::string newString = "-" + nextNextString;
 					Token newToken = { Token::Type::Number, newString };
 					math_exp.at(i + 2) = newToken;
 					math_exp.erase(math_exp.begin() + i + 1);
-					//std::cout << "HERE 3" << std::endl;
 				}
 			}
 		}
 
 		//implicit multiplication
+		//if the current type is a right para or a number, implicit multiplication could follow
 		if (tempType == Token::Type::rPara || tempType == Token::Type::Number) {
-			Token::Type nextType = math_exp.at(i + 1).getType();
-			//std::cout << "multiplication 1" << std::endl;
+			Token::Type nextType = math_exp.at(i + 1).getType();	//get the next token type
 
+			//if the next token is a leftpara then it means we need to insert implicit multiplication
+			//adds a multiplication token into vector and advances i
 			if (nextType == Token::Type::lPara) {
-				//vecOfNums.insert(itPos, 9);
 				std::string multiplicationString = "*";
-				Token multiplicationToken = { Token::Type::Operator, multiplicationString };
+				int prec = 3;
+				bool ra = false;
+				Token multiplicationToken = { Token::Type::Operator, multiplicationString, prec, ra };
 				math_exp.insert(math_exp.begin() + i + 1, multiplicationToken);
 				i++;
-				//std::cout << "multiplication 2" << std::endl;
 			}
 		}
 	}
 
 	//converts vector of tokens to string
+	//this makes it easier to validate
+	//convers numbers to d
+	//converts operator to their operator
+	//converts lpara and rpara to ( and )
+	//converts EndOfString character to $
+	//adds anything unknonw and itself because that will get caught
+	//builds one big string
 	std::string math_exp_string = "";
 	for (int i = 0; i < math_exp.size(); ++i) {
 		Token::Type tempType = math_exp.at(i).getType();
@@ -90,7 +105,7 @@ bool validate(std::vector<Token>& math_exp) {
 			else if (tokenString == "/") { math_exp_string = math_exp_string + "/"; }
 			else if (tokenString == "^") { math_exp_string = math_exp_string + "^"; }
 			else {
-				//adds invalid symbol
+				//adds invalid symbol; will get caught by parser later
 				math_exp_string = math_exp_string + tokenString;
 			}
 			break;
@@ -104,25 +119,27 @@ bool validate(std::vector<Token>& math_exp) {
 			math_exp_string = math_exp_string + "$";
 			break;
 		case Token::Type::Unknown:
+			//adds invalid symbol; will get caught by parser later
 			math_exp_string = math_exp_string + tokenString;
 			break;
 		default: 
+			//adds invalid symbol; will get caught by parser later
 			math_exp_string = math_exp_string + tokenString;
 			break;
 		}
-		//std::cout << math_exp_string << std::endl;
 	}
 
-	//std::cout << math_exp_string << std::endl;
 
-	//Start processing string to validate
+
+	//Start processing the string we just built to validate if it is a math expression
+	//Utalize LL(1) lookup table
 
 	std::stack<char> stack_machine;
 
 	stack_machine.push('$');
 	stack_machine.push('t');
 
-	for (int i = 0; i < math_exp.size(); i++) {
+	for (int i = 0; i < math_exp_string.size(); i++) {
 		int next_token;
 		int current_nonterminal;
 		char string_char = math_exp_string.at(i);
@@ -162,7 +179,6 @@ bool validate(std::vector<Token>& math_exp) {
 			}
 
 			push_string = ll_table[current_nonterminal][next_token];
-			//std::cout << current_nonterminal << " " << next_token << std::endl;
 
 
 			if (push_string.length() == 0) {
